@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brasil Tezos - Arte e Inovação na Blockchain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7FAFC;
+            color: #1A202C;
+        }
+        .tezos-blue { color: #2B79FF; }
+        .bg-tezos-blue { background-color: #2B79FF; }
+        .border-tezos-blue { border-color: #2B79FF; }
+        .hero-gradient { background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); }
+        .section-title {
+            font-size: 2.25rem; /* 36px */
+            font-weight: 700;
+            margin-bottom: 1.5rem; /* 24px */
+            text-align: center;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            display: flex; 
+            flex-direction: column; 
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .card-content { 
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem; 
+            border-radius: 9999px; 
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .btn-primary {
+            background-color: #2B79FF;
+            color: white;
+        }
+        .btn-primary:hover { background-color: #1A5FDE; }
+        .btn-secondary {
+            background-color: transparent;
+            color: #2B79FF;
+            border-color: #2B79FF;
+        }
+        .btn-secondary:hover { background-color: #E0E7FF; }
+        .btn-youtube {
+            background-color: #FF0000; 
+            color: white;
+        }
+        .btn-youtube:hover {
+            background-color: #CC0000; 
+        }
+        .img-placeholder, .nft-image-container {
+            background-color: #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #A0AEC0;
+            font-size: 0.875rem; 
+            width: 100%;
+            height: 16rem; 
+        }
+        .nft-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #2B79FF; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1A5FDE; }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.fade-in-section');
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationDelay = entry.target.dataset.delay || '0s';
+                        entry.target.classList.add('animate-fadeIn');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            sections.forEach(section => observer.observe(section));
+
+            const menuButton = document.getElementById('menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuButton && mobileMenu) {
+                menuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            }
+        });
+    </script>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center text-2xl font-bold tezos-blue">
+                <img src="brasiltezos.jpg" alt="Logotipo Brasil Tezos" class="h-8 w-8 rounded-full mr-3 object-cover">
+                <span>Brasil Tezos</span>
+            </a>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#inicio" class="text-gray-700 hover:text-tezos-blue transition duration-300">Início</a>
+                <a href="#galeria" class="text-gray-700 hover:text-tezos-blue transition duration-300">Galeria de Arte</a>
+                <a href="#noticias" class="text-gray-700 hover:text-tezos-blue transition duration-300">Notícias</a>
+                <a href="#comunidade" class="text-gray-700 hover:text-tezos-blue transition duration-300">Comunidade</a>
+                <a href="#sobre" class="text-gray-700 hover:text-tezos-blue transition duration-300">Sobre</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="menu-button" class="text-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <a href="#inicio" class="block px-6 py-3 text-gray-700 hover:bg-tezos-blue hover:text-white transition duration-300">Início</a>
+            <a href="#galeria" class="block px-6 py-3 text-gray-700 hover:bg-tezos-blue hover:text-white transition duration-300">Galeria de Arte</a>
+            <a href="#noticias" class="block px-6 py-3 text-gray-700 hover:bg-tezos-blue hover:text-white transition duration-300">Notícias</a>
+            <a href="#comunidade" class="block px-6 py-3 text-gray-700 hover:bg-tezos-blue hover:text-white transition duration-300">Comunidade</a>
+            <a href="#sobre" class="block px-6 py-3 text-gray-700 hover:bg-tezos-blue hover:text-white transition duration-300">Sobre</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero-gradient py-20 md:py-32 fade-in-section">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mb-6">
+                    Brasil Tezos: <span class="tezos-blue">Arte</span> e <span class="tezos-blue">Inovação</span> na Blockchain
+                </h1>
+                <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
+                    Descubra o vibrante universo dos NFTs de artistas brasileiros na Tezos e fique por dentro das últimas novidades do ecossistema.
+                </p>
+                <a href="#galeria" class="btn btn-primary text-lg">Explore a Galeria</a>
+            </div>
+        </section>
+
+        <section id="galeria" class="py-16 md:py-24 bg-white fade-in-section" data-delay="0.2s">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title text-gray-800">Galeria de Arte <span class="tezos-blue">NFT Brasileira</span></h2>
+                <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                    Mergulhe na criatividade dos artistas brasileiros que escolheram a Tezos para registrar suas obras digitais. As obras são atualizadas diretamente da nossa coleção no Objkt.com.
+                </p>
+                <div id="artGalleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <p id="galleryLoadingMessage" class="col-span-full text-center text-gray-500 text-lg">Carregando obras da galeria...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="noticias" class="py-16 md:py-24 bg-gray-50 fade-in-section" data-delay="0.4s">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title text-gray-800">Últimas Notícias <span class="tezos-blue">Tezos</span></h2>
+                <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                    Mantenha-se atualizado com os desenvolvimentos mais recentes, parcerias e inovações no ecossistema Tezos, direto do nosso blog.
+                </p>
+                <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <p id="newsLoadingMessage" class="col-span-full text-center text-gray-500 text-lg">Carregando notícias...</p>
+                    </div>
+            </div>
+        </section>
+
+        <section id="comunidade" class="py-16 md:py-24 hero-gradient fade-in-section" data-delay="0.6s">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="section-title text-gray-800">Junte-se à Nossa <span class="tezos-blue">Comunidade</span></h2>
+                <p class="text-lg text-gray-600 mb-10 max-w-xl mx-auto">
+                    Conecte-se conosco nas redes sociais, participe das discussões e faça parte do movimento Tezos no Brasil!
+                </p>
+                <div class="flex flex-col sm:flex-row flex-wrap justify-center items-center space-y-4 sm:space-y-0 sm:space-x-0 md:space-x-6">
+                    <a href="https://x.com/BrasilTezos" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full sm:w-auto text-lg mb-4 sm:mb-0 sm:mr-3 md:mr-0">
+                        Siga no X (Twitter)
+                    </a>
+                    <a href="https://instagram.com/BrasilTezos" target="_blank" rel="noopener noreferrer" class="btn btn-secondary w-full sm:w-auto text-lg mb-4 sm:mb-0 sm:ml-3 md:ml-0">
+                        Siga no Instagram
+                    </a>
+                    <a href="https://www.youtube.com/@brasiltezos" target="_blank" rel="noopener noreferrer" class="btn btn-youtube w-full sm:w-auto text-lg mt-0 md:mt-0 md:ml-6">
+                        Inscreva-se no YouTube
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="sobre" class="py-16 md:py-24 bg-white fade-in-section" data-delay="0.8s">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title text-gray-800">Sobre a <span class="tezos-blue">Tezos</span> e a <span class="tezos-blue">Brasil Tezos</span></h2>
+                <div class="grid md:grid-cols-2 gap-10 text-gray-700 leading-relaxed">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-gray-800">O que é Tezos?</h3>
+                        <p class="mb-4">
+                            Tezos é uma blockchain de código aberto, auto-atualizável e eficiente em termos de energia, projetada para alimentar o futuro da web descentralizada. Com um mecanismo de consenso Proof-of-Stake, a Tezos permite que seus stakeholders participem da governança da rede e recompensa sua participação.
+                        </p>
+                        <p>
+                            Sua arquitetura modular e mecanismo formal de atualização reduzem o risco de hard forks controversos, tornando-a uma plataforma robusta e evolutiva para aplicações descentralizadas (dApps), NFTs, DeFi e muito mais.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-gray-800">Nossa Missão na Brasil Tezos</h3>
+                        <p class="mb-4">
+                            A Brasil Tezos é uma comunidade dedicada a promover e expandir o ecossistema Tezos no Brasil. Nosso objetivo é educar o público sobre os benefícios e oportunidades da blockchain Tezos, desde sua tecnologia inovadora até seu vibrante mercado de arte digital.
+                        </p>
+                        <p>
+                            Destacamos o trabalho de artistas brasileiros que utilizam a Tezos para criar e vender NFTs, fomentando um mercado de arte onchain acessível e dinâmico. Além disso, compartilhamos as últimas notícias, atualizações e projetos relevantes para a comunidade brasileira interessada na Tezos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-12">
+        <div class="container mx-auto px-6 text-center">
+            <div class="flex justify-center items-center mb-4">
+                <img src="brasiltezos.jpg" alt="Logotipo Brasil Tezos" class="h-7 w-7 rounded-full mr-2 object-cover">
+                <p class="text-2xl font-bold">Brasil Tezos</p>
+            </div>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="https://x.com/BrasilTezos" target="_blank" rel="noopener noreferrer" class="hover:text-tezos-blue transition duration-300">X (Twitter)</a>
+                <a href="https://instagram.com/BrasilTezos" target="_blank" rel="noopener noreferrer" class="hover:text-tezos-blue transition duration-300">Instagram</a>
+                <a href="https://www.youtube.com/@brasiltezos" target="_blank" rel="noopener noreferrer" class="hover:text-tezos-blue transition duration-300">YouTube</a>
+                <a href="https://tezos.com/" target="_blank" rel="noopener noreferrer" class="hover:text-tezos-blue transition duration-300">Tezos Oficial</a>
+            </div>
+            <p class="text-sm">© <span id="currentYear"></span> Brasil Tezos. Todos os direitos reservados.</p>
+            <p class="text-xs mt-2">Inspirado no design de <a href="https://tezos.com/" target="_blank" rel="noopener noreferrer" class="underline hover:text-tezos-blue">tezos.com</a></p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Script da Galeria Objkt ---
+            const OBJKT_API_URL = 'https://data.objkt.com/v3/graphql';
+            const HOLDER_WALLET_ADDRESS = 'tz1SnUVygTszocxXaaJpg4vBXveE1bPJDJv2'; 
+            const GALLERY_GRID = document.getElementById('artGalleryGrid');
+            const GALLERY_LOADING_MESSAGE = document.getElementById('galleryLoadingMessage'); 
+            const ART_CACHE_KEY = 'brasilTezosGalleryCache_wallet'; 
+            const ART_CACHE_DURATION_MS = 7 * 24 * 60 * 60 * 1000; 
+
+            function getIpfsUrl(ipfsUri) {
+                if (!ipfsUri) return 'https://placehold.co/400x300/E2E8F0/A0AEC0?text=Metadados+Inválidos'; 
+                if (ipfsUri.startsWith('ipfs://')) {
+                    return `https://ipfs.io/ipfs/${ipfsUri.substring(7)}`;
+                }
+                if (ipfsUri.startsWith('http')) {
+                    return ipfsUri;
+                }
+                if ((ipfsUri.startsWith('Qm') && ipfsUri.length === 46) || (ipfsUri.startsWith('b') && ipfsUri.length > 46) ) {
+                     return `https://ipfs.io/ipfs/${ipfsUri}`;
+                }
+                console.warn('Formato de URI IPFS não reconhecido:', ipfsUri);
+                return 'https://placehold.co/400x300/E2E8F0/A0AEC0?text=Link+Quebrado'; 
+            }
+
+            function renderArtworks(artworks) {
+                if (GALLERY_LOADING_MESSAGE) GALLERY_LOADING_MESSAGE.style.display = 'none';
+                if (!GALLERY_GRID) return; // Adicionada verificação
+                GALLERY_GRID.innerHTML = ''; 
+
+                if (!artworks || artworks.length === 0) {
+                    GALLERY_GRID.innerHTML = '<p class="col-span-full text-center text-gray-500">Nenhuma obra encontrada na carteira informada no momento.</p>';
+                    return;
+                }
+
+                artworks.forEach(art => { 
+                    if (!art) { 
+                        console.warn('Item de arte inválido encontrado:', art); 
+                        return; 
+                    }
+
+                    const title = art.name || 'Obra Sem Título';
+                    const artistDetails = art.creators && art.creators.length > 0 ? art.creators[0].holder : null;
+                    const artistName = artistDetails ? (artistDetails.tzdomain || artistDetails.address) : 'Artista Desconhecido';
+                    const shortArtistName = artistName.length > 20 ? artistName.substring(0,10) + '...' + artistName.substring(artistName.length - 4) : artistName;
+
+                    const primaryImageUri = art.display_uri || art.thumbnail_uri;
+                    const imageUrl = getIpfsUrl(primaryImageUri) || 'https://placehold.co/400x300/E2E8F0/A0AEC0?text=Imagem+Indisponível';
+                    
+                    const objktLink = `https://objkt.com/asset/${art.fa_contract}/${art.token_id}`;
+                    const description = art.description || 'Sem descrição disponível.';
+                    const shortDescription = description.length > 100 ? description.substring(0, 97) + '...' : description;
+
+                    const cardHtml = `
+                        <div class="card">
+                            <div class="nft-image-container">
+                                <img src="${imageUrl}" alt="${title}" class="nft-image" 
+                                     onerror="this.onerror=null; this.src='https://placehold.co/400x300/E2E8F0/A0AEC0?text=Erro+ao+carregar'; console.error('Erro ao carregar imagem: ${imageUrl}');">
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2 text-gray-800 truncate" title="${title}">${title}</h3>
+                                <p class="text-gray-600 mb-1 truncate" title="Artista: ${artistName}">Artista: ${shortArtistName}</p>
+                                <p class="text-sm text-gray-500 mb-4 h-16 overflow-hidden" title="${description}">${shortDescription}</p>
+                                <a href="${objktLink}" target="_blank" rel="noopener noreferrer" class="text-sm btn btn-secondary w-full">Ver no Objkt.com</a>
+                            </div>
+                        </div>
+                    `;
+                    GALLERY_GRID.insertAdjacentHTML('beforeend', cardHtml);
+                });
+            }
+
+            async function fetchArtworksFromApi() {
+                const query = `
+                    query GetHolderNfts($holderAddress: String!, $limit: Int = 12, $offset: Int = 0) {
+                      token(
+                        where: {
+                          holders: {
+                            holder_address: {_eq: $holderAddress},
+                            quantity: {_gt: "0"}
+                          },
+                          supply: {_gt: "0"}, 
+                          mime: {_in: ["image/jpeg", "image/png", "image/gif", "image/webp", "video/mp4", "model/gltf-binary"]}
+                        }, 
+                        order_by: {timestamp: desc}, 
+                        limit: $limit,
+                        offset: $offset 
+                      ) {
+                        name
+                        description
+                        display_uri
+                        thumbnail_uri 
+                        mime 
+                        creators {
+                          holder {
+                            address
+                            tzdomain
+                          }
+                        }
+                        fa_contract
+                        token_id
+                        timestamp
+                      }
+                    }
+                `;
+                try {
+                    const response = await fetch(OBJKT_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            query: query,
+                            variables: { holderAddress: HOLDER_WALLET_ADDRESS, limit: 12, offset: 0 } 
+                        }),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+                    }
+                    const jsonResponse = await response.json();
+                    if (jsonResponse.errors) {
+                        console.error('GraphQL Errors:', jsonResponse.errors);
+                        const errorMessages = jsonResponse.errors.map(e => e.message || JSON.stringify(e)).join(', ');
+                        throw new Error('Erro ao buscar dados da API Objkt: ' + errorMessages);
+                    }
+                    if (!jsonResponse.data || !jsonResponse.data.token) {
+                        console.warn('Resposta da API não contém token esperado:', jsonResponse);
+                        return []; 
+                    }
+                    return jsonResponse.data.token.filter(t => t); 
+                } catch (error) {
+                    console.error('Erro ao buscar obras da API Objkt:', error);
+                    if (GALLERY_LOADING_MESSAGE) GALLERY_LOADING_MESSAGE.style.display = 'none';
+                    if (!GALLERY_GRID) return null; // Adicionada verificação
+                    const fallbackErrorMessage = "Error loading gallery. Check console for details.";
+                    const errorMessageToDisplay = error.message && error.message.includes("API Objkt") ? error.message : fallbackErrorMessage;
+                    GALLERY_GRID.innerHTML = '<p class="col-span-full text-center text-red-500">' + errorMessageToDisplay + '</p>';
+                    return null;
+                }
+            }
+
+            async function loadGallery() {
+                if (!GALLERY_GRID) { // Adicionada verificação inicial
+                    console.error("Elemento da galeria (GALLERY_GRID) não encontrado.");
+                    return;
+                }
+                const cachedData = localStorage.getItem(ART_CACHE_KEY);
+                let artworks = null;
+
+                if (cachedData) {
+                    try {
+                        const { timestamp, data } = JSON.parse(cachedData);
+                        if (Date.now() - timestamp < ART_CACHE_DURATION_MS) {
+                            console.log('Usando dados da galeria do cache (carteira).');
+                            artworks = data;
+                        } else {
+                            console.log('Cache da galeria expirado.');
+                        }
+                    } catch (e) {
+                        console.error("Erro ao parsear cache da galeria:", e);
+                        localStorage.removeItem(ART_CACHE_KEY); // Limpa cache corrompido
+                    }
+                }
+
+                if (!artworks) {
+                    console.log('Buscando dados da galeria da API Objkt (carteira).');
+                    if (GALLERY_LOADING_MESSAGE) GALLERY_LOADING_MESSAGE.style.display = 'block'; 
+                    artworks = await fetchArtworksFromApi();
+                    if (artworks) { 
+                        localStorage.setItem(ART_CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: artworks })); 
+                    }
+                }
+                renderArtworks(artworks);
+            }
+
+            if (GALLERY_GRID && HOLDER_WALLET_ADDRESS && HOLDER_WALLET_ADDRESS !== 'YOUR_TEZOS_WALLET_ADDRESS_HERE') { 
+                 loadGallery();
+            } else if (GALLERY_GRID) { 
+                if (GALLERY_LOADING_MESSAGE) GALLERY_LOADING_MESSAGE.style.display = 'none';
+                GALLERY_GRID.innerHTML = '<p class="col-span-full text-center text-orange-500">A galeria não está configurada. Por favor, adicione o endereço da sua carteira Tezos no script.</p>';
+                console.warn("Endereço da carteira Tezos não configurado (ainda é o placeholder).");
+            }
+
+            // --- Script para Notícias do Medium RSS ---
+            const NEWS_RSS_URL = 'https://medium.com/feed/@brasiltezos.tez';
+            const NEWS_GRID = document.getElementById('newsGrid');
+            const NEWS_LOADING_MESSAGE = document.getElementById('newsLoadingMessage');
+            const NEWS_CACHE_KEY = 'brasilTezosNewsCache';
+            const NEWS_CACHE_DURATION_MS = 6 * 60 * 60 * 1000; // 6 horas para notícias
+
+            function stripHtml(html) {
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                return doc.body.textContent || "";
+            }
+
+            function formatDate(dateString) {
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+                } catch (e) {
+                    console.warn("Erro ao formatar data:", dateString, e);
+                    return dateString; 
+                }
+            }
+
+            function renderNewsItems(items) {
+                if (NEWS_LOADING_MESSAGE) NEWS_LOADING_MESSAGE.style.display = 'none';
+                if (!NEWS_GRID) return; // Adicionada verificação
+                NEWS_GRID.innerHTML = '';
+
+                if (!items || items.length === 0) {
+                    NEWS_GRID.innerHTML = '<p class="col-span-full text-center text-gray-500">Nenhuma notícia encontrada no momento.</p>';
+                    return;
+                }
+
+                const itemsToDisplay = items.slice(0, 3);
+
+                itemsToDisplay.forEach(item => {
+                    const title = item.querySelector('title')?.textContent || 'Sem Título';
+                    const link = item.querySelector('link')?.textContent || '#';
+                    const pubDate = item.querySelector('pubDate')?.textContent || '';
+                    const formattedDate = formatDate(pubDate);
+                    
+                    let descriptionHtml = item.querySelector('encoded')?.textContent || item.querySelector('description')?.textContent || '';
+                    if (descriptionHtml.startsWith('<![CDATA[')) { 
+                        descriptionHtml = descriptionHtml.substring(9, descriptionHtml.length - 3);
+                    }
+                    const plainDescription = stripHtml(descriptionHtml);
+                    const summary = plainDescription.substring(0, 120) + (plainDescription.length > 120 ? '...' : '');
+
+                    const categoryElements = item.querySelectorAll('category');
+                    let category = 'Artigo'; 
+                    if (categoryElements && categoryElements.length > 0) {
+                        for (let catNode of categoryElements) {
+                            const catText = catNode.textContent;
+                            if (catText && catText !== catText.toLowerCase() && !catText.includes('-')) {
+                                category = catText;
+                                break;
+                            }
+                        }
+                    }
+
+                    const cardHtml = `
+                        <div class="card">
+                            <div class="p-6 card-content">
+                                <div>
+                                    <span class="text-sm text-tezos-blue font-semibold mb-2 inline-block">${category}</span>
+                                    <h3 class="text-xl font-semibold mb-3 text-gray-800">${title}</h3>
+                                    <p class="text-gray-600 text-sm mb-4">${summary}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-4">${formattedDate}</p>
+                                    <a href="${link}" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-tezos-blue hover:underline">Leia mais no Medium →</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    NEWS_GRID.insertAdjacentHTML('beforeend', cardHtml);
+                });
+            }
+
+            async function fetchNewsFromRss() {
+                if (NEWS_LOADING_MESSAGE) NEWS_LOADING_MESSAGE.style.display = 'block';
+                let responseText; 
+
+                try {
+                    console.log("RSS Fetch: Tentando buscar RSS diretamente:", NEWS_RSS_URL);
+                    const directResponse = await fetch(NEWS_RSS_URL);
+                    console.log("RSS Fetch: Status da busca direta:", directResponse.status, "OK:", directResponse.ok);
+
+                    if (directResponse.ok) {
+                        responseText = await directResponse.text();
+                        console.log("RSS Fetch: Busca direta do RSS bem-sucedida. Tamanho do texto:", responseText?.length);
+                    } else {
+                        console.warn(`RSS Fetch: Busca direta do RSS falhou (${directResponse.status} ${directResponse.statusText}), tentando com proxy CORS...`);
+                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(NEWS_RSS_URL)}`;
+                        console.log("RSS Fetch: Tentando buscar RSS via proxy:", proxyUrl);
+                        const proxyResponse = await fetch(proxyUrl);
+                        console.log("RSS Fetch: Status da busca via proxy:", proxyResponse.status, "OK:", proxyResponse.ok);
+
+                        if (!proxyResponse.ok) {
+                             throw new Error(`Erro na busca via proxy CORS! Status: ${proxyResponse.status} -
