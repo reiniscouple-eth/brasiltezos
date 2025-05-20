@@ -97,6 +97,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #1A5FDE; }
     </style>
     <script>
+        // Script para funcionalidades gerais da página (menu, animações)
         document.addEventListener('DOMContentLoaded', () => {
             const sections = document.querySelectorAll('.fade-in-section');
             const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
@@ -279,7 +280,7 @@
 
             function renderArtworks(artworks) {
                 if (GALLERY_LOADING_MESSAGE) GALLERY_LOADING_MESSAGE.style.display = 'none';
-                if (!GALLERY_GRID) return; // Adicionada verificação
+                if (!GALLERY_GRID) return; 
                 GALLERY_GRID.innerHTML = ''; 
 
                 if (!artworks || artworks.length === 0) {
@@ -382,7 +383,7 @@
                 } catch (error) {
                     console.error('Erro ao buscar obras da API Objkt:', error);
                     if (GALLERY_LOADING_MESSAGE) GALLERY_LOADING_MESSAGE.style.display = 'none';
-                    if (!GALLERY_GRID) return null; // Adicionada verificação
+                    if (!GALLERY_GRID) return null; 
                     const fallbackErrorMessage = "Error loading gallery. Check console for details.";
                     const errorMessageToDisplay = error.message && error.message.includes("API Objkt") ? error.message : fallbackErrorMessage;
                     GALLERY_GRID.innerHTML = '<p class="col-span-full text-center text-red-500">' + errorMessageToDisplay + '</p>';
@@ -391,7 +392,7 @@
             }
 
             async function loadGallery() {
-                if (!GALLERY_GRID) { // Adicionada verificação inicial
+                if (!GALLERY_GRID) { 
                     console.error("Elemento da galeria (GALLERY_GRID) não encontrado.");
                     return;
                 }
@@ -409,7 +410,7 @@
                         }
                     } catch (e) {
                         console.error("Erro ao parsear cache da galeria:", e);
-                        localStorage.removeItem(ART_CACHE_KEY); // Limpa cache corrompido
+                        localStorage.removeItem(ART_CACHE_KEY); 
                     }
                 }
 
@@ -434,6 +435,7 @@
 
             // --- Script para Notícias do Medium RSS ---
             const NEWS_RSS_URL = 'https://medium.com/feed/@brasiltezos.tez';
+            const CORS_PROXY_URL = 'https://api.allorigins.win/get?url='; // Proxy para contornar CORS
             const NEWS_GRID = document.getElementById('newsGrid');
             const NEWS_LOADING_MESSAGE = document.getElementById('newsLoadingMessage');
             const NEWS_CACHE_KEY = 'brasilTezosNewsCache';
@@ -456,7 +458,7 @@
 
             function renderNewsItems(items) {
                 if (NEWS_LOADING_MESSAGE) NEWS_LOADING_MESSAGE.style.display = 'none';
-                if (!NEWS_GRID) return; // Adicionada verificação
+                if (!NEWS_GRID) return; 
                 NEWS_GRID.innerHTML = '';
 
                 if (!items || items.length === 0) {
@@ -513,21 +515,133 @@
             async function fetchNewsFromRss() {
                 if (NEWS_LOADING_MESSAGE) NEWS_LOADING_MESSAGE.style.display = 'block';
                 let responseText; 
+                const urlToFetch = CORS_PROXY_URL + encodeURIComponent(NEWS_RSS_URL);
+                console.log("RSS Fetch: Tentando buscar RSS via proxy:", urlToFetch);
 
                 try {
-                    console.log("RSS Fetch: Tentando buscar RSS diretamente:", NEWS_RSS_URL);
-                    const directResponse = await fetch(NEWS_RSS_URL);
-                    console.log("RSS Fetch: Status da busca direta:", directResponse.status, "OK:", directResponse.ok);
+                    const response = await fetch(urlToFetch);
+                    console.log("RSS Fetch: Status da busca via proxy:", response.status, "OK:", response.ok);
 
-                    if (directResponse.ok) {
-                        responseText = await directResponse.text();
-                        console.log("RSS Fetch: Busca direta do RSS bem-sucedida. Tamanho do texto:", responseText?.length);
+                    if (!response.ok) {
+                         throw new Error(`Erro na busca via proxy CORS! Status: ${response.status} - ${response.statusText}`);
+                    }
+                    const proxyData = await response.json();
+                    
+                    if (!proxyData || typeof proxyData.contents !== 'string') { 
+                        console.error("RSS Fetch: Resposta do proxy invalida ou sem 'contents' como string:", proxyData);
+                        throw new Error("Resposta invalida do proxy CORS ou 'contents' nao e uma string.");
+                    }
+                    console.log("RSS Fetch: Busca via proxy CORS bem-sucedida.");
+                    responseText = proxyData.contents;
+                                        
+                    if (!responseText) {
+                        console.error("RSS Fetch: Nenhum conteudo XML recebido do feed RSS (apos proxy).");
+                        throw new Error("Nenhum conteudo XML recebido do feed RSS (apos proxy).");
+                    }
+                    console.log("RSS Fetch: Texto XML recebido (inicio):", responseText.substring(0, 300) + "...");
+                    
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(responseText, "application/xml");
+                    
+                    const parseError = xmlDoc.querySelector("parsererror");
+                    if (parseError) {
+                        console.error("RSS Fetch: Erro ao parsear XML do RSS:", parseError.textContent);
+                        throw new Error("Erro ao processar o feed RSS (parsererror). Detalhes: " + parseError.textContent);
+                    }
+                    
+                    const items = xmlDoc.querySelectorAll("item");
+                     if (items.length === 0 ) {
+                         console.warn("RSS Fetch: Nenhum item <item> encontrado no feed RSS. Verifique a estrutura do XML ou se o feed esta vazio.");
+                    }
+                    console.log("RSS Fetch: Items encontrados:", items.length);
+                    return Array.from(items);
+
+                } catch (error) {
+                    console.error('--- ERRO DETALHADO em fetchNewsFromRss ---');
+                    console.error('Tipo do Erro:', Object.prototype.toString.call(error));
+                    console.error('Objeto de erro completo:', error); // Este é o log que você mencionou como {}
+                    if(error && error.name) console.error('Nome do erro:', error.name);
+                    if(error && error.message) console.error('Mensagem do erro:', error.message); // Este é 'Failed to fetch'
+                    if(error && error.stack) console.error('Stack do erro:', error.stack);
+                    console.error('--- FIM ERRO DETALHADO ---');
+
+                    if (NEWS_LOADING_MESSAGE) NEWS_LOADING_MESSAGE.style.display = 'none';
+                    if (!NEWS_GRID) return null; 
+                    
+                    let displayMessage = "Nao foi possivel carregar as noticias. "; 
+                    if (error && error.message === 'Failed to fetch') {
+                        displayMessage += "Falha na conexao com o servidor do feed ou proxy. Verifique sua conexao ou tente mais tarde.";
+                        console.error("A causa mais provavel de 'Failed to fetch' com objeto de erro vazio e um problema de rede/DNS, ou o proxy CORS esta bloqueando/falhando silenciosamente.");
+                    } else if (error && typeof error.message === 'string' && error.message.trim() !== '') {
+                        displayMessage += error.message;
+                    } else if (error && typeof error.toString === 'function' && error.toString().trim() !== '' && error.toString().trim() !== '[object Object]') {
+                        displayMessage += error.toString();
                     } else {
-                        console.warn(`RSS Fetch: Busca direta do RSS falhou (${directResponse.status} ${directResponse.statusText}), tentando com proxy CORS...`);
-                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(NEWS_RSS_URL)}`;
-                        console.log("RSS Fetch: Tentando buscar RSS via proxy:", proxyUrl);
-                        const proxyResponse = await fetch(proxyUrl);
-                        console.log("RSS Fetch: Status da busca via proxy:", proxyResponse.status, "OK:", proxyResponse.ok);
+                         displayMessage += "Ocorreu um erro inesperado. Verifique o console.";
+                    }
+                    
+                    NEWS_GRID.innerHTML = ''; 
+                    const pElement = document.createElement('p');
+                    pElement.className = 'col-span-full text-center text-red-500';
+                    pElement.textContent = displayMessage; 
+                    NEWS_GRID.appendChild(pElement);
+                    return null;
+                }
+            }
 
-                        if (!proxyResponse.ok) {
-                             throw new Error(`Erro na busca via proxy CORS! Status: ${proxyResponse.status} -
+            async function loadNews() {
+                if (!NEWS_GRID) { 
+                    console.error("Elemento de notícias (NEWS_GRID) não encontrado.");
+                    return;
+                }
+                const cachedNews = localStorage.getItem(NEWS_CACHE_KEY);
+                let newsItemsXmlElements = null; 
+
+                if (cachedNews) {
+                     try {
+                        const { timestamp, data } = JSON.parse(cachedNews);
+                        if (Date.now() - timestamp < NEWS_CACHE_DURATION_MS) {
+                            console.log('Usando notícias do cache.');
+                            const parser = new DOMParser();
+                            newsItemsXmlElements = data.map(itemHtml => {
+                                const doc = parser.parseFromString(itemHtml, "application/xml");
+                                return doc.documentElement; 
+                            });
+                        } else {
+                            console.log('Cache de notícias expirado.');
+                        }
+                    } catch(e) {
+                        console.error("Erro ao parsear cache de noticias:", e);
+                        localStorage.removeItem(NEWS_CACHE_KEY); 
+                    }
+                }
+
+                if (!newsItemsXmlElements) {
+                    console.log('Buscando notícias do feed RSS.');
+                    newsItemsXmlElements = await fetchNewsFromRss();
+                    if (newsItemsXmlElements && newsItemsXmlElements.length > 0) { 
+                        const itemsToCache = newsItemsXmlElements.map(itemElement => itemElement.outerHTML);
+                        localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: itemsToCache }));
+                    } else if (newsItemsXmlElements === null) { 
+                        console.log("Não foi possível buscar notícias, não atualizando o cache.");
+                    } else { 
+                         console.log("Feed RSS retornou vazio ou erro, limpando cache de notícias se existir.");
+                         localStorage.removeItem(NEWS_CACHE_KEY); 
+                    }
+                }
+                
+                if (newsItemsXmlElements) { 
+                    renderNewsItems(newsItemsXmlElements);
+                } else if (!cachedNews) { 
+                    console.log("Falha ao buscar notícias e sem cache disponível.");
+                }
+            }
+
+            if (NEWS_GRID) { 
+                loadNews();
+            }
+        });
+    </script>
+
+</body>
+</html>
